@@ -5,7 +5,10 @@ import com.tct.SecondProject.model.DeviceAttribute;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public interface DeviceRepository extends JpaRepository<Device,Integer> {
+import java.util.List;
 
+@Repository
+
+public interface DeviceAttributeRepository extends JpaRepository<DeviceAttributeRepository,Integer> {
+     List<DeviceAttribute> findByDevice(Device device)
 }

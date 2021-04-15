@@ -1,18 +1,13 @@
 package com.tct.SecondProject.controller;
 
-import com.tct.SecondProject.model.Device;
-import com.tct.SecondProject.model.DeviceApiModel;
-import com.tct.SecondProject.model.FindAll;
-import com.tct.SecondProject.model.Room;
+import com.tct.SecondProject.model.*;
 import com.tct.SecondProject.repository.DeviceRepository;
 import com.tct.SecondProject.repository.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class DeviceController {
@@ -22,11 +17,13 @@ public class DeviceController {
     private RoomRepository roomRepository;
 
     @GetMapping("/devices")
-    public FindAll<DeviceApiModel> getAll() {
+    public FindAll<DeviceApiModel> findAll() {
         FindAll<DeviceApiModel> allDevices = new FindAll<>();
-
         List<Device> devices = deviceRepository.findAll();
-        allDevices.setItems(devices);
+        List<DeviceApiModel> models =devices.stream()
+                .map(DeviceApiModel::new)
+                .collect(Collectors.toList());
+        allDevices.setItems(models);
         return allDevices;
     }
     @PostMapping("/devices")
@@ -36,7 +33,30 @@ public class DeviceController {
         device.setName(deviceApiModel.getName());
         device.setIsOn(deviceApiModel.getIsOn());
         device.setRoom(room);
-        deviceRepository.save(deviceApiModel);
+        deviceRepository.save(device);
     }
+
+    @PutMapping("/devices/{id}")
+    public void updateDevice(@PathVariable Integer id ,@RequestBody DeviceApiModel model) {
+        Device device =deviceRepository.getOne(id);
+
+        Room room =roomRepository.getOne(model.getRoomId());
+        device.setName(model.getName());
+        device.setIsOn(model.getIsOn());
+        device.setRoom(room);
+        deviceRepository.save(device);
+    }
+
+    @DeleteMapping ("/devices/{id}")
+    public void deleteDevice(@PathVariable Integer id ,@RequestBody DeviceApiModel model) {
+        Device device =deviceRepository.getOne(id);
+
+        Room room =roomRepository.getOne(model.getRoomId());
+        device.setName(model.getName());
+        device.setIsOn(model.getIsOn());
+        device.setRoom(room);
+        deviceRepository.delete(device);
+    }
+
 
 }

@@ -9,6 +9,6 @@ import java.util.List;
 
 @Repository
 
-public interface DeviceAttributeRepository extends JpaRepository<DeviceAttributeRepository,Integer> {
-     List<DeviceAttribute> findByDevice(Device device)
+public interface DeviceAttributeRepository extends JpaRepository<DeviceAttribute,Integer> {
+     List<DeviceAttribute> findByDevice(Device device);
 }

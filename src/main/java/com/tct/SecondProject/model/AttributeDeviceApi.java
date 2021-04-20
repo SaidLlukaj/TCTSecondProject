@@ -1,23 +1,27 @@
 package com.tct.SecondProject.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-
-@Entity
-public class DeviceAttribute {
-
-    @Id
-    @GeneratedValue
+public class AttributeDeviceApi {
     private Integer id;
     private String name;
     private Integer minValue;
     private Integer maxValue;
     private Integer currentValue;
+    private Integer deviceId;
 
-    @ManyToOne
-    private Device device;
+    public AttributeDeviceApi(){
+
+    }
+    public AttributeDeviceApi(DeviceAttribute deviceAttribute){
+        this.id=deviceAttribute.getId();
+        this.name=deviceAttribute.getName();
+        this.minValue=deviceAttribute.getMinValue();
+        this.maxValue=deviceAttribute.getMaxValue();
+        this.currentValue=deviceAttribute.getCurrentValue();
+        this.deviceId=deviceAttribute.getDevice().getId();
+
+
+
+    }
 
     public Integer getId() {
         return id;
@@ -59,12 +63,11 @@ public class DeviceAttribute {
         this.currentValue = currentValue;
     }
 
-    public Device getDevice() {
-        return device;
+    public Integer getDeviceId() {
+        return deviceId;
     }
 
-    public void setDevice(Device device) {
-        this.device = device;
+    public void setDeviceId(Integer deviceId) {
+        this.deviceId = deviceId;
     }
-
 }

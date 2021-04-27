@@ -4,6 +4,9 @@ import com.tct.SecondProject.model.*;
 import com.tct.SecondProject.repository.DeviceAttributeRepository;
 import com.tct.SecondProject.repository.DeviceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.xml.stream.events.Attribute;
@@ -19,10 +22,13 @@ public class AttributeController {
     private DeviceRepository deviceRepository;
 
     @GetMapping("/devices/{deviceId}/attributes")
-    public FindAll<AttributeDeviceApi> getDeviceAttributes(@PathVariable Integer deviceId) {
+    public FindAll<AttributeDeviceApi> getDeviceAttributes(@PathVariable Integer deviceId,
+                                                           @RequestParam Integer pageNumber,
+                                                           @RequestParam Integer pageSize) {
+        Pageable pageable= PageRequest.of(pageNumber,pageSize);
         Optional<Device> optional = deviceRepository.findById(deviceId);
         Device device = optional.get();
-        List<DeviceAttribute> attributes = deviceAttributeRepository.findByDevice(device);
+        List<DeviceAttribute> attributes = deviceAttributeRepository.findByDevice(device,pageable);
         List<AttributeDeviceApi> models = attributes.stream()
                 .map(AttributeDeviceApi::new)
                 .collect(Collectors.toList());
@@ -30,6 +36,9 @@ public class AttributeController {
 
         FindAll<AttributeDeviceApi> all = new FindAll<>();
         all.setItems(models);
+        all.setPage(pageNumber);
+        all.setTotal(deviceAttributeRepository.countByDevice(device));
+
         return all;
     }
 
